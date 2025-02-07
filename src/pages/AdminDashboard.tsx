@@ -36,18 +36,23 @@ const AdminDashboard = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const newBlog = {
+      id: editingId || Date.now(),
+      title,
+      content,
+      date: new Date().toISOString(),
+    };
+
     if (editingId !== null) {
-      // Edit existing blog
       setBlogs(blogs.map(blog => 
-        blog.id === editingId ? { ...blog, title, content } : blog
+        blog.id === editingId ? newBlog : blog
       ));
       toast({
         title: "Blog updated",
         description: "The blog post has been updated successfully.",
       });
     } else {
-      // Add new blog
-      setBlogs([...blogs, { id: Date.now(), title, content }]);
+      setBlogs([newBlog, ...blogs]);
       toast({
         title: "Blog created",
         description: "New blog post has been created successfully.",
@@ -78,7 +83,7 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto py-8 px-4">
+    <div className="max-w-4xl mx-auto">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl font-bold text-blog-title">Admin Dashboard</h1>
         <Button variant="outline" onClick={handleLogout}>

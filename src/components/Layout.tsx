@@ -9,19 +9,21 @@ const Layout = ({ children }: LayoutProps) => {
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b">
-        <nav className="page-container flex items-center justify-between py-4">
+        <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between py-4">
           <Link to="/" className="text-2xl font-bold text-blog-title">
-            Blog
+            krsnasakhaa
           </Link>
           <Link to="/admin" className="button-secondary">
             Admin
           </Link>
         </nav>
       </header>
-      <main className="page-container">{children}</main>
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {children}
+      </main>
       <footer className="border-t mt-16">
-        <div className="page-container py-8 text-center text-blog-muted">
-          © {new Date().getFullYear()} Blog. All rights reserved.
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-blog-muted">
+          © {new Date().getFullYear()} krsnasakhaa. All rights reserved.
         </div>
       </footer>
     </div>

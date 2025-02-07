@@ -12,11 +12,15 @@ interface LayoutProps {
   children: ReactNode;
 }
 
+interface Blog {
+  category: string;
+}
+
 const Layout = ({ children }: LayoutProps) => {
   const getCategories = () => {
-    const blogs = JSON.parse(localStorage.getItem("blogs") || "[]");
-    const categories = new Set(blogs.map((blog: any) => blog.category || "Uncategorized"));
-    return Array.from(categories);
+    const blogs = JSON.parse(localStorage.getItem("blogs") || "[]") as Blog[];
+    const categories = new Set(blogs.map((blog) => blog.category || "Uncategorized"));
+    return Array.from(categories) as string[];
   };
 
   return (

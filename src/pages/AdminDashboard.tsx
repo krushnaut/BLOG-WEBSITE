@@ -5,6 +5,13 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Table,
   TableBody,
   TableCell,
@@ -18,12 +25,23 @@ interface Blog {
   title: string;
   content: string;
   date: string;
+  category?: string;
 }
+
+const categories = [
+  "Bhakti",
+  "Philosophy",
+  "Lifestyle",
+  "Culture",
+  "Festivals",
+  "Other"
+];
 
 const AdminDashboard = () => {
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [category, setCategory] = useState("");
   const [editingId, setEditingId] = useState<number | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -47,6 +65,7 @@ const AdminDashboard = () => {
       id: editingId || Date.now(),
       title,
       content,
+      category,
       date: new Date().toISOString().split('T')[0],
     };
 
@@ -71,12 +90,14 @@ const AdminDashboard = () => {
     localStorage.setItem("blogs", JSON.stringify(updatedBlogs));
     setTitle("");
     setContent("");
+    setCategory("");
     setEditingId(null);
   };
 
   const handleEdit = (blog: Blog) => {
     setTitle(blog.title);
     setContent(blog.content);
+    setCategory(blog.category || "");
     setEditingId(blog.id);
   };
 
@@ -104,8 +125,8 @@ const AdminDashboard = () => {
         </Button>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4 mb-8">
-        <div>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="text-left">
           <label htmlFor="title" className="block text-sm font-medium text-blog-body mb-1">
             Blog Title
           </label>
@@ -117,7 +138,24 @@ const AdminDashboard = () => {
             placeholder="Enter blog title"
           />
         </div>
-        <div>
+        <div className="text-left">
+          <label htmlFor="category" className="block text-sm font-medium text-blog-body mb-1">
+            Category
+          </label>
+          <Select value={category} onValueChange={setCategory}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select category" />
+            </SelectTrigger>
+            <SelectContent>
+              {categories.map((cat) => (
+                <SelectItem key={cat} value={cat}>
+                  {cat}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="text-left">
           <label htmlFor="content" className="block text-sm font-medium text-blog-body mb-1">
             Blog Content
           </label>
@@ -141,6 +179,7 @@ const AdminDashboard = () => {
           <TableHeader>
             <TableRow>
               <TableHead>Title</TableHead>
+              <TableHead>Category</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -148,6 +187,7 @@ const AdminDashboard = () => {
             {blogs.map((blog) => (
               <TableRow key={blog.id}>
                 <TableCell className="font-medium">{blog.title}</TableCell>
+                <TableCell>{blog.category || "Uncategorized"}</TableCell>
                 <TableCell>
                   <div className="flex gap-2">
                     <Button variant="outline" size="sm" onClick={() => handleEdit(blog)}>

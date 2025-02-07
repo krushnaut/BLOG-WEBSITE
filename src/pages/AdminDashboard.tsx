@@ -17,6 +17,7 @@ interface Blog {
   id: number;
   title: string;
   content: string;
+  date: string;
 }
 
 const AdminDashboard = () => {
@@ -31,6 +32,12 @@ const AdminDashboard = () => {
     const isLoggedIn = localStorage.getItem("isAdminLoggedIn");
     if (!isLoggedIn) {
       navigate("/admin");
+      return;
+    }
+
+    const storedBlogs = localStorage.getItem("blogs");
+    if (storedBlogs) {
+      setBlogs(JSON.parse(storedBlogs));
     }
   }, [navigate]);
 
@@ -40,24 +47,28 @@ const AdminDashboard = () => {
       id: editingId || Date.now(),
       title,
       content,
-      date: new Date().toISOString(),
+      date: new Date().toISOString().split('T')[0],
     };
 
+    let updatedBlogs;
     if (editingId !== null) {
-      setBlogs(blogs.map(blog => 
+      updatedBlogs = blogs.map(blog => 
         blog.id === editingId ? newBlog : blog
-      ));
+      );
       toast({
         title: "Blog updated",
         description: "The blog post has been updated successfully.",
       });
     } else {
-      setBlogs([newBlog, ...blogs]);
+      updatedBlogs = [newBlog, ...blogs];
       toast({
         title: "Blog created",
         description: "New blog post has been created successfully.",
       });
     }
+    
+    setBlogs(updatedBlogs);
+    localStorage.setItem("blogs", JSON.stringify(updatedBlogs));
     setTitle("");
     setContent("");
     setEditingId(null);
@@ -70,7 +81,9 @@ const AdminDashboard = () => {
   };
 
   const handleDelete = (id: number) => {
-    setBlogs(blogs.filter(blog => blog.id !== id));
+    const updatedBlogs = blogs.filter(blog => blog.id !== id);
+    setBlogs(updatedBlogs);
+    localStorage.setItem("blogs", JSON.stringify(updatedBlogs));
     toast({
       title: "Blog deleted",
       description: "The blog post has been deleted successfully.",

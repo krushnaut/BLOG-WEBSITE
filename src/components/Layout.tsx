@@ -30,11 +30,11 @@ const Layout = ({ children }: LayoutProps) => {
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between py-4">
             <Link to="/" className="text-xl sm:text-2xl font-bold text-blog-title">
-              krsnasakhaa
+              Krsnasakhaa
             </Link>
             <div className="flex items-center gap-6">
               <Link 
-                to="https://instagram.com" 
+                to="https://instagram.com/krsnasakhaa" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-gray-600 hover:text-gray-900"

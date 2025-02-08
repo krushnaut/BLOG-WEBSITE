@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
@@ -8,16 +9,16 @@ interface BlogCardProps {
   date: string;
 }
 
-const BlogCard = ({ id, title, description, date }: BlogCardProps) => {
+const BlogCard = ({ id, title, date }: BlogCardProps) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
+      className="w-full"
     >
       <Link to={`/blog/${id}`} className="blog-card block">
         <h2 className="blog-title">{title}</h2>
-        <p className="blog-description">{description}</p>
         <div className="blog-meta">
           {new Date(date).toLocaleDateString("en-US", {
             year: "numeric",

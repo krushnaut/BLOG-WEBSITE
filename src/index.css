@@ -39,7 +39,7 @@
 }
 
 .blog-card {
-  @apply relative overflow-hidden rounded-lg border bg-card p-6 transition-all duration-300 hover:shadow-lg;
+  @apply relative overflow-hidden rounded-lg border bg-card p-6 transition-all duration-300 hover:shadow-lg w-full;
   animation: fadeIn 0.5s ease-out forwards;
 }
 
@@ -48,7 +48,7 @@
 }
 
 .blog-title {
-  @apply text-2xl font-bold text-blog-title mb-2 line-clamp-2;
+  @apply text-xl sm:text-2xl font-bold text-blog-title mb-2 line-clamp-2 hover:text-purple-600 transition-colors;
 }
 
 .blog-description {

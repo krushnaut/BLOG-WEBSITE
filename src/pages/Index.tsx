@@ -1,3 +1,4 @@
+
 import BlogCard from "@/components/BlogCard";
 import { useEffect, useState } from "react";
 
@@ -19,9 +20,9 @@ const Index = () => {
   }, []);
 
   return (
-    <div>
-      <h1 className="text-4xl font-bold text-blog-title mb-12">Latest Posts</h1>
-      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+    <div className="px-4 sm:px-6 lg:px-8">
+      <h1 className="text-4xl font-bold text-blog-title mb-12 text-center sm:text-left">Latest Posts</h1>
+      <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         {blogs.map((blog) => (
           <BlogCard
             key={blog.id}

@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Editor } from "@tinymce/tinymce-react";
 import { useToast } from "@/components/ui/use-toast";
 import {
   Select,
@@ -27,6 +26,7 @@ interface Blog {
   content: string;
   date: string;
   category?: string;
+  likes?: number;
 }
 
 const categories = [
@@ -68,6 +68,7 @@ const AdminDashboard = () => {
       content,
       category,
       date: new Date().toISOString().split('T')[0],
+      likes: 0,
     };
 
     let updatedBlogs;
@@ -160,25 +161,45 @@ const AdminDashboard = () => {
           <label htmlFor="content" className="block text-sm font-medium text-blog-body mb-1">
             Blog Content
           </label>
-          <Editor
-            id="content"
-            value={content}
-            onEditorChange={(newContent) => setContent(newContent)}
-            init={{
-              height: 400,
-              menubar: false,
-              plugins: [
-                'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-                'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
-              ],
-              toolbar: 'undo redo | formatselect | ' +
-                'bold italic backcolor | alignleft aligncenter ' +
-                'alignright alignjustify | bullist numlist outdent indent | ' +
-                'removeformat | help',
-              content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
-            }}
-          />
+          <div className="border rounded-md p-2">
+            <div className="space-x-2 mb-2">
+              <button
+                type="button"
+                onClick={() => setContent(content + "<h1>")}
+                className="px-2 py-1 border rounded"
+              >
+                H1
+              </button>
+              <button
+                type="button"
+                onClick={() => setContent(content + "<br>")}
+                className="px-2 py-1 border rounded"
+              >
+                BR
+              </button>
+              <button
+                type="button"
+                onClick={() => setContent(content + "<b>")}
+                className="px-2 py-1 border rounded"
+              >
+                Bold
+              </button>
+              <button
+                type="button"
+                onClick={() => setContent(content + "<i>")}
+                className="px-2 py-1 border rounded"
+              >
+                Italic
+              </button>
+            </div>
+            <textarea
+              id="content"
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              className="w-full h-64 p-2 border rounded"
+              required
+            />
+          </div>
         </div>
         <Button type="submit">
           {editingId !== null ? "Update Blog" : "Create Blog"}

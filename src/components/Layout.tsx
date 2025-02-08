@@ -25,8 +25,8 @@ const Layout = ({ children }: LayoutProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50">
+      <header className="border-b bg-white/80 backdrop-blur-sm">
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between py-4">
           <Link to="/" className="text-2xl font-bold text-blog-title">
             krsnasakhaa
@@ -58,13 +58,13 @@ const Layout = ({ children }: LayoutProps) => {
           </div>
         </nav>
       </header>
-      <div className="bg-gray-100 py-2 text-center text-blog-body">
+      <div className="bg-white/80 backdrop-blur-sm py-2 text-center text-blog-body">
         We are eternal servants of Supreme Lord Sri Krishna
       </div>
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {children}
       </main>
-      <footer className="border-t mt-16">
+      <footer className="border-t mt-16 bg-white/80 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-blog-muted">
           © {new Date().getFullYear()} krsnasakhaa. All rights reserved.
         </div>

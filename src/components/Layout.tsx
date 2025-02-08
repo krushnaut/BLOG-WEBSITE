@@ -1,6 +1,7 @@
+
 import { ReactNode } from "react";
 import { Link } from "react-router-dom";
-import { Search } from "lucide-react";
+import { Search, Instagram } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,6 +32,14 @@ const Layout = ({ children }: LayoutProps) => {
             krsnasakhaa
           </Link>
           <div className="flex items-center gap-4">
+            <Link 
+              to="https://instagram.com" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-gray-600 hover:text-gray-900"
+            >
+              <Instagram className="w-6 h-6" />
+            </Link>
             <DropdownMenu>
               <DropdownMenuTrigger>
                 <Search className="w-6 h-6" />

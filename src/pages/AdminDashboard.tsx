@@ -1,8 +1,9 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Editor } from "@tinymce/tinymce-react";
 import { useToast } from "@/components/ui/use-toast";
 import {
   Select,
@@ -159,13 +160,24 @@ const AdminDashboard = () => {
           <label htmlFor="content" className="block text-sm font-medium text-blog-body mb-1">
             Blog Content
           </label>
-          <Textarea
+          <Editor
             id="content"
             value={content}
-            onChange={(e) => setContent(e.target.value)}
-            required
-            placeholder="Write your blog content here"
-            className="min-h-[200px]"
+            onEditorChange={(newContent) => setContent(newContent)}
+            init={{
+              height: 400,
+              menubar: false,
+              plugins: [
+                'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
+              ],
+              toolbar: 'undo redo | formatselect | ' +
+                'bold italic backcolor | alignleft aligncenter ' +
+                'alignright alignjustify | bullist numlist outdent indent | ' +
+                'removeformat | help',
+              content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+            }}
           />
         </div>
         <Button type="submit">

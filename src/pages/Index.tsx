@@ -22,7 +22,7 @@ const Index = () => {
   return (
     <div className="px-4 sm:px-6 lg:px-8">
       <h1 className="text-4xl font-bold text-blog-title mb-12 text-center sm:text-left">Latest Posts</h1>
-      <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 auto-rows-fr">
         {blogs.map((blog) => (
           <BlogCard
             key={blog.id}

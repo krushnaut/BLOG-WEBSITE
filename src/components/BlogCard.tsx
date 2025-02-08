@@ -15,16 +15,18 @@ const BlogCard = ({ id, title, date }: BlogCardProps) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="w-full"
+      className="w-full h-full"
     >
-      <Link to={`/blog/${id}`} className="blog-card block">
-        <h2 className="blog-title">{title}</h2>
-        <div className="blog-meta">
-          {new Date(date).toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })}
+      <Link to={`/blog/${id}`} className="blog-card block h-full">
+        <div className="flex flex-col h-full justify-between">
+          <h2 className="blog-title">{title}</h2>
+          <div className="blog-meta">
+            {new Date(date).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </div>
         </div>
       </Link>
     </motion.div>

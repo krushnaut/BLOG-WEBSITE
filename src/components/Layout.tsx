@@ -27,34 +27,36 @@ const Layout = ({ children }: LayoutProps) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50">
       <header className="border-b bg-white/80 backdrop-blur-sm">
-        <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between py-4">
-          <Link to="/" className="text-2xl font-bold text-blog-title">
-            krsnasakhaa
-          </Link>
-          <div className="flex items-center gap-4">
-            <Link 
-              to="https://instagram.com" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-gray-600 hover:text-gray-900"
-            >
-              <Instagram className="w-6 h-6" />
+        <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between py-4">
+            <Link to="/" className="text-xl sm:text-2xl font-bold text-blog-title">
+              krsnasakhaa
             </Link>
-            <DropdownMenu>
-              <DropdownMenuTrigger>
-                <Search className="w-6 h-6" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                {getCategories().map((category) => (
-                  <DropdownMenuItem key={category}>
-                    <Link to={`/?category=${category}`}>{category}</Link>
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <Link to="/admin" className="button-secondary">
-              Admin
-            </Link>
+            <div className="flex items-center gap-6">
+              <Link 
+                to="https://instagram.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-gray-600 hover:text-gray-900"
+              >
+                <Instagram className="w-5 h-5 sm:w-6 sm:h-6" />
+              </Link>
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <Search className="w-5 h-5 sm:w-6 sm:h-6" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  {getCategories().map((category) => (
+                    <DropdownMenuItem key={category}>
+                      <Link to={`/?category=${category}`}>{category}</Link>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <Link to="/admin" className="button-secondary text-sm">
+                Admin
+              </Link>
+            </div>
           </div>
         </nav>
       </header>

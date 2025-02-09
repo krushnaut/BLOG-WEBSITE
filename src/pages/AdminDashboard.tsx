@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import {
   Select,
   SelectContent,
@@ -44,6 +45,7 @@ const AdminDashboard = () => {
   const [content, setContent] = useState("");
   const [category, setCategory] = useState("");
   const [editingId, setEditingId] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -54,46 +56,87 @@ const AdminDashboard = () => {
       return;
     }
 
-    const storedBlogs = localStorage.getItem("blogs");
-    if (storedBlogs) {
-      setBlogs(JSON.parse(storedBlogs));
-    }
-  }, [navigate]);
+    const fetchBlogs = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('blogs')
+          .select('*')
+          .order('created_at', { ascending: false });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const newBlog = {
-      id: editingId || Date.now(),
-      title,
-      content,
-      category,
-      date: new Date().toISOString().split('T')[0],
-      likes: 0,
+        if (error) throw error;
+        setBlogs(data || []);
+      } catch (error) {
+        console.error('Error fetching blogs:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load blogs. Please try again later.",
+          variant: "destructive"
+        });
+      } finally {
+        setIsLoading(false);
+      }
     };
 
-    let updatedBlogs;
-    if (editingId !== null) {
-      updatedBlogs = blogs.map(blog => 
-        blog.id === editingId ? newBlog : blog
-      );
+    fetchBlogs();
+  }, [navigate, toast]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    try {
+      if (editingId !== null) {
+        const { error } = await supabase
+          .from('blogs')
+          .update({
+            title,
+            content,
+            category
+          })
+          .eq('id', editingId);
+
+        if (error) throw error;
+
+        toast({
+          title: "Blog updated",
+          description: "The blog post has been updated successfully.",
+        });
+      } else {
+        const { error } = await supabase
+          .from('blogs')
+          .insert([{
+            title,
+            content,
+            category,
+            likes: 0
+          }]);
+
+        if (error) throw error;
+
+        toast({
+          title: "Blog created",
+          description: "New blog post has been created successfully.",
+        });
+      }
+
+      // Refresh blogs list
+      const { data: updatedBlogs } = await supabase
+        .from('blogs')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      setBlogs(updatedBlogs || []);
+      setTitle("");
+      setContent("");
+      setCategory("");
+      setEditingId(null);
+    } catch (error) {
+      console.error('Error saving blog:', error);
       toast({
-        title: "Blog updated",
-        description: "The blog post has been updated successfully.",
-      });
-    } else {
-      updatedBlogs = [newBlog, ...blogs];
-      toast({
-        title: "Blog created",
-        description: "New blog post has been created successfully.",
+        title: "Error",
+        description: "Failed to save blog. Please try again later.",
+        variant: "destructive"
       });
     }
-    
-    setBlogs(updatedBlogs);
-    localStorage.setItem("blogs", JSON.stringify(updatedBlogs));
-    setTitle("");
-    setContent("");
-    setCategory("");
-    setEditingId(null);
   };
 
   const handleEdit = (blog: Blog) => {
@@ -103,20 +146,42 @@ const AdminDashboard = () => {
     setEditingId(blog.id);
   };
 
-  const handleDelete = (id: number) => {
-    const updatedBlogs = blogs.filter(blog => blog.id !== id);
-    setBlogs(updatedBlogs);
-    localStorage.setItem("blogs", JSON.stringify(updatedBlogs));
-    toast({
-      title: "Blog deleted",
-      description: "The blog post has been deleted successfully.",
-    });
+  const handleDelete = async (id: number) => {
+    try {
+      const { error } = await supabase
+        .from('blogs')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
+      setBlogs(blogs.filter(blog => blog.id !== id));
+      toast({
+        title: "Blog deleted",
+        description: "The blog post has been deleted successfully.",
+      });
+    } catch (error) {
+      console.error('Error deleting blog:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete blog. Please try again later.",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleLogout = () => {
     localStorage.removeItem("isAdminLoggedIn");
     navigate("/admin");
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-[50vh]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto">

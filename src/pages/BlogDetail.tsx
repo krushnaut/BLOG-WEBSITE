@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Share2, ThumbsUp } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Blog {
   id: string;
@@ -11,41 +12,75 @@ interface Blog {
   content: string;
   date: string;
   category?: string;
-  likes?: number;
+  likes: number;
 }
 
 const BlogDetail = () => {
   const { id } = useParams();
   const [blog, setBlog] = useState<Blog | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
   useEffect(() => {
-    const storedBlogs = localStorage.getItem("blogs");
-    if (storedBlogs) {
-      const blogs = JSON.parse(storedBlogs);
-      const currentBlog = blogs.find((b: Blog) => b.id.toString() === id);
-      setBlog(currentBlog);
-    }
-  }, [id]);
+    const fetchBlog = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('blogs')
+          .select('*')
+          .eq('id', id)
+          .single();
 
-  const handleLike = () => {
+        if (error) {
+          console.error('Error fetching blog:', error);
+          toast({
+            title: "Error",
+            description: "Failed to load blog. Please try again later.",
+            variant: "destructive"
+          });
+          return;
+        }
+
+        setBlog(data);
+      } catch (error) {
+        console.error('Error:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load blog. Please try again later.",
+          variant: "destructive"
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchBlog();
+  }, [id, toast]);
+
+  const handleLike = async () => {
     if (!blog) return;
     
-    const storedBlogs = JSON.parse(localStorage.getItem("blogs") || "[]");
-    const updatedBlogs = storedBlogs.map((b: Blog) => {
-      if (b.id.toString() === id) {
-        return { ...b, likes: (b.likes || 0) + 1 };
-      }
-      return b;
-    });
-    
-    localStorage.setItem("blogs", JSON.stringify(updatedBlogs));
-    setBlog({ ...blog, likes: (blog.likes || 0) + 1 });
-    
-    toast({
-      title: "Thanks for your like!",
-      description: "Your appreciation means a lot to us.",
-    });
+    try {
+      const { error } = await supabase
+        .from('blogs')
+        .update({ likes: (blog.likes || 0) + 1 })
+        .eq('id', id);
+
+      if (error) throw error;
+      
+      setBlog({ ...blog, likes: (blog.likes || 0) + 1 });
+      
+      toast({
+        title: "Thanks for your like!",
+        description: "Your appreciation means a lot to us.",
+      });
+    } catch (error) {
+      console.error('Error updating likes:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update likes. Please try again later.",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleShare = async () => {
@@ -69,7 +104,22 @@ const BlogDetail = () => {
     }
   };
 
-  if (!blog) return <div>Loading...</div>;
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-[50vh]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+      </div>
+    );
+  }
+
+  if (!blog) {
+    return (
+      <div className="max-w-3xl mx-auto py-8 px-4 text-center">
+        <h1 className="text-2xl font-bold text-blog-title mb-4">Blog Not Found</h1>
+        <p className="text-blog-body">The blog post you're looking for doesn't exist.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-3xl mx-auto py-8 px-4">

@@ -9,7 +9,7 @@ interface BlogCardProps {
   date: string;
 }
 
-const BlogCard = ({ id, title, date }: BlogCardProps) => {
+const BlogCard = ({ id, title }: BlogCardProps) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -18,15 +18,8 @@ const BlogCard = ({ id, title, date }: BlogCardProps) => {
       className="w-full h-full"
     >
       <Link to={`/blog/${id}`} className="blog-card block h-full">
-        <div className="flex flex-col h-full justify-between">
+        <div className="flex flex-col h-full">
           <h2 className="blog-title">{title}</h2>
-          <div className="blog-meta">
-            {new Date(date).toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
-          </div>
         </div>
       </Link>
     </motion.div>

@@ -18,7 +18,7 @@ const BlogCard = ({ id, title }: BlogCardProps) => {
       className="w-full h-full"
     >
       <Link to={`/blog/${id}`} className="blog-card block h-full">
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col h-full items-center justify-center px-4 py-6">
           <h2 className="blog-title">{title}</h2>
         </div>
       </Link>

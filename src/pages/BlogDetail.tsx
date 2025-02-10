@@ -7,7 +7,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
 interface Blog {
-  id: string;
+  id: number;  // Changed from string to number to match Supabase schema
   title: string;
   content: string;
   date: string;
@@ -27,7 +27,7 @@ const BlogDetail = () => {
         const { data, error } = await supabase
           .from('blogs')
           .select('*')
-          .eq('id', id)
+          .eq('id', parseInt(id!)) // Convert string id to number
           .single();
 
         if (error) {
@@ -63,7 +63,7 @@ const BlogDetail = () => {
       const { error } = await supabase
         .from('blogs')
         .update({ likes: (blog.likes || 0) + 1 })
-        .eq('id', id);
+        .eq('id', parseInt(id!)); // Convert string id to number
 
       if (error) throw error;
       

@@ -39,6 +39,24 @@ export type Database = {
         }
         Relationships: []
       }
+      local_admins: {
+        Row: {
+          id: number
+          is_admin: boolean | null
+          username: string
+        }
+        Insert: {
+          id?: number
+          is_admin?: boolean | null
+          username: string
+        }
+        Update: {
+          id?: number
+          is_admin?: boolean | null
+          username?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

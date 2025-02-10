@@ -46,36 +46,16 @@ const AdminDashboard = () => {
   const [category, setCategory] = useState("");
   const [editingId, setEditingId] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
   useEffect(() => {
-    const checkAdminStatus = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
+    const checkAuth = () => {
+      const isLoggedIn = localStorage.getItem("isAdminLoggedIn") === "true";
+      if (!isLoggedIn) {
         navigate("/admin");
         return;
       }
-
-      const { data: adminData } = await supabase
-        .from('local_admins')
-        .select('is_admin')
-        .eq('username', session.user.email)
-        .single();
-
-      if (!adminData?.is_admin) {
-        toast({
-          title: "Access Denied",
-          description: "You don't have admin privileges.",
-          variant: "destructive"
-        });
-        navigate("/admin");
-        return;
-      }
-
-      setIsAdmin(true);
       fetchBlogs();
     };
 
@@ -100,7 +80,7 @@ const AdminDashboard = () => {
       }
     };
 
-    checkAdminStatus();
+    checkAuth();
   }, [navigate, toast]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -193,12 +173,12 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
+  const handleLogout = () => {
+    localStorage.removeItem("isAdminLoggedIn");
     navigate("/admin");
   };
 
-  if (!isAdmin || isLoading) {
+  if (isLoading) {
     return (
       <div className="flex justify-center items-center min-h-[50vh]">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>

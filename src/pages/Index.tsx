@@ -60,18 +60,17 @@ const Index = () => {
   }
 
   return (
-    <div className="px-2 sm:px-6 lg:px-8">
-      <h1 className="text-4xl font-bold text-blog-title mb-12 text-center sm:text-left">Latest Posts</h1>
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-4xl font-bold text-center mb-12">Latest Stories</h1>
       {blogs.length === 0 ? (
         <p className="text-center text-gray-500">No blogs posted yet.</p>
       ) : (
-        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 auto-rows-fr">
+        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {blogs.map((blog) => (
             <BlogCard
               key={blog.id}
-              id={blog.id.toString()}
+              id={blog.id}
               title={blog.title}
-              description={blog.content}
               date={blog.date}
             />
           ))}

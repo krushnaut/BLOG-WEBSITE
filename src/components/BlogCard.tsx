@@ -1,27 +1,41 @@
 
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { format } from "date-fns";
 
 interface BlogCardProps {
-  id: string;
+  id: number;
   title: string;
-  description: string;
   date: string;
 }
 
-const BlogCard = ({ id, title }: BlogCardProps) => {
+const BlogCard = ({ id, title, date }: BlogCardProps) => {
+  // Format the date to match the design (e.g., "December 27, 2024")
+  const formattedDate = format(new Date(date), "MMMM dd, yyyy");
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="w-full h-full"
+      className="w-full"
     >
-      <Link to={`/blog/${id}`} className="blog-card block h-full">
-        <div className="flex flex-col h-full items-center justify-center px-4 py-6">
-          <h2 className="blog-title">{title}</h2>
+      <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100 h-full flex flex-col">
+        <h2 className="text-xl font-bold text-gray-900 mb-2 hover:text-purple-600 transition-colors">
+          {title}
+        </h2>
+        <div className="text-gray-500 text-sm mb-4">
+          {formattedDate}
         </div>
-      </Link>
+        <div className="mt-auto text-right">
+          <Link 
+            to={`/blog/${id}`} 
+            className="text-blue-500 hover:text-blue-600 transition-colors text-sm"
+          >
+            Read Blog
+          </Link>
+        </div>
+      </div>
     </motion.div>
   );
 };

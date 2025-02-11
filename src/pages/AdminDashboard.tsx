@@ -20,6 +20,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Card,
+  CardContent,
+} from "@/components/ui/card";
 
 interface Blog {
   id: number;
@@ -50,6 +55,15 @@ const AdminDashboard = () => {
   const { toast } = useToast();
 
   useEffect(() => {
+    const checkAuth = () => {
+      const isLoggedIn = localStorage.getItem("isAdminLoggedIn") === "true";
+      if (!isLoggedIn) {
+        navigate("/admin");
+        return;
+      }
+      fetchBlogs();
+    };
+
     const checkAuth = () => {
       const isLoggedIn = localStorage.getItem("isAdminLoggedIn") === "true";
       if (!isLoggedIn) {
@@ -186,8 +200,38 @@ const AdminDashboard = () => {
     );
   }
 
+  const handleContentFormat = (format: string) => {
+    const textarea = document.getElementById('content') as HTMLTextAreaElement;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = content.substring(start, end);
+    let newText = '';
+
+    switch (format) {
+      case 'bold':
+        newText = `**${selectedText}**`;
+        break;
+      case 'italic':
+        newText = `*${selectedText}*`;
+        break;
+      case 'heading':
+        newText = `# ${selectedText}`;
+        break;
+      case 'quote':
+        newText = `> ${selectedText}`;
+        break;
+      default:
+        return;
+    }
+
+    const newContent = content.substring(0, start) + newText + content.substring(end);
+    setContent(newContent);
+  };
+
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-4xl mx-auto p-4">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl font-bold text-blog-title">Admin Dashboard</h1>
         <Button variant="outline" onClick={handleLogout}>
@@ -195,8 +239,8 @@ const AdminDashboard = () => {
         </Button>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="text-left">
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div>
           <label htmlFor="title" className="block text-sm font-medium text-blog-body mb-1">
             Blog Title
           </label>
@@ -206,9 +250,11 @@ const AdminDashboard = () => {
             onChange={(e) => setTitle(e.target.value)}
             required
             placeholder="Enter blog title"
+            className="w-full"
           />
         </div>
-        <div className="text-left">
+
+        <div>
           <label htmlFor="category" className="block text-sm font-medium text-blog-body mb-1">
             Category
           </label>
@@ -225,51 +271,58 @@ const AdminDashboard = () => {
             </SelectContent>
           </Select>
         </div>
-        <div className="text-left">
-          <label htmlFor="content" className="block text-sm font-medium text-blog-body mb-1">
-            Blog Content
-          </label>
-          <div className="border rounded-md p-2">
-            <div className="space-x-2 mb-2">
-              <button
+
+        <Card>
+          <CardContent className="p-4">
+            <label htmlFor="content" className="block text-sm font-medium text-blog-body mb-2">
+              Blog Content
+            </label>
+            <div className="space-x-2 mb-3">
+              <Button
                 type="button"
-                onClick={() => setContent(content + "<h1>")}
-                className="px-2 py-1 border rounded"
+                variant="outline"
+                size="sm"
+                onClick={() => handleContentFormat('heading')}
               >
-                H1
-              </button>
-              <button
+                Heading
+              </Button>
+              <Button
                 type="button"
-                onClick={() => setContent(content + "<br>")}
-                className="px-2 py-1 border rounded"
-              >
-                BR
-              </button>
-              <button
-                type="button"
-                onClick={() => setContent(content + "<b>")}
-                className="px-2 py-1 border rounded"
+                variant="outline"
+                size="sm"
+                onClick={() => handleContentFormat('bold')}
               >
                 Bold
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
-                onClick={() => setContent(content + "<i>")}
-                className="px-2 py-1 border rounded"
+                variant="outline"
+                size="sm"
+                onClick={() => handleContentFormat('italic')}
               >
                 Italic
-              </button>
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => handleContentFormat('quote')}
+              >
+                Quote
+              </Button>
             </div>
-            <textarea
+            <Textarea
               id="content"
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              className="w-full h-64 p-2 border rounded"
+              className="min-h-[300px] font-mono"
+              placeholder="Write your blog content here..."
               required
             />
-          </div>
-        </div>
-        <Button type="submit">
+          </CardContent>
+        </Card>
+
+        <Button type="submit" className="w-full">
           {editingId !== null ? "Update Blog" : "Create Blog"}
         </Button>
       </form>

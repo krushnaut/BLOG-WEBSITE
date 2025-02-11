@@ -53,6 +53,27 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  const fetchBlogs = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('blogs')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setBlogs(data || []);
+    } catch (error) {
+      console.error('Error fetching blogs:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load blogs. Please try again later.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     const checkAuth = () => {
       const isLoggedIn = localStorage.getItem("isAdminLoggedIn") === "true";
@@ -61,27 +82,6 @@ const AdminDashboard = () => {
         return;
       }
       fetchBlogs();
-    };
-
-    const fetchBlogs = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('blogs')
-          .select('*')
-          .order('created_at', { ascending: false });
-
-        if (error) throw error;
-        setBlogs(data || []);
-      } catch (error) {
-        console.error('Error fetching blogs:', error);
-        toast({
-          title: "Error",
-          description: "Failed to load blogs. Please try again later.",
-          variant: "destructive"
-        });
-      } finally {
-        setIsLoading(false);
-      }
     };
 
     checkAuth();
@@ -305,7 +305,7 @@ const AdminDashboard = () => {
               id="content"
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              className="min-h-[300px] font-mono"
+              className="min-h-[300px]"
               placeholder="Write your blog content here..."
               required
             />

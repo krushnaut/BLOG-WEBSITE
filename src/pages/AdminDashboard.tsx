@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -55,15 +54,6 @@ const AdminDashboard = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    const checkAuth = () => {
-      const isLoggedIn = localStorage.getItem("isAdminLoggedIn") === "true";
-      if (!isLoggedIn) {
-        navigate("/admin");
-        return;
-      }
-      fetchBlogs();
-    };
-
     const checkAuth = () => {
       const isLoggedIn = localStorage.getItem("isAdminLoggedIn") === "true";
       if (!isLoggedIn) {

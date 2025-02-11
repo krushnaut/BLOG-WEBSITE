@@ -17,7 +17,7 @@ const BlogCard = ({ id, title }: BlogCardProps) => {
       className="w-full"
     >
       <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100 h-full flex flex-col">
-        <h2 className="text-xl font-bold text-gray-900 mb-2 hover:text-purple-600 transition-colors">
+        <h2 className="text-sm sm:text-base font-bold text-gray-900 mb-2 hover:text-purple-600 transition-colors line-clamp-2">
           {title}
         </h2>
         <div className="mt-auto text-right">
